@@ -1,0 +1,3 @@
+jwt:
+  secret: iAtHtAnSM9e538Xs2Aa0dY40wipKgpo4uQmeRSKb6Sc=
+  expiration: 86400000 # 24 horas en milisegundos

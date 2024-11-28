@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:5432/${DB_NAME:togoisperf}
+    username: ${DB_USERNAME:togoisperf_usr}
+    password: ${DB_PASSWORD:t0g015P3R}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      schema: ${DB_SCHEMA:login} # Esquema predeterminado para la conexión
+
+  jpa:
+    hibernate:
+      ddl-auto: none # Opciones: validate, update, create, create-drop
+    show-sql: false # Muestra las consultas SQL en la consola
+    properties:
+      hibernate:
+        format_sql: false # Formatea la salida SQL para mejorar la legibilidad
+        use_sql_comments: true # Agrega comentarios en las consultas SQL
+        default_schema: ${DB_SCHEMA:login} # Define el esquema predeterminado
+
+  flyway:
+    enabled: true # Activa Flyway para migración de base de datos
+    locations: classpath:db/migration # Ubicación de los scripts de migración

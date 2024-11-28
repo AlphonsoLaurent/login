@@ -1,0 +1,12 @@
+spring:
+  profiles:
+    group:
+      "dev":
+        - dev-datasource
+        - management
+        - logging
+        - server
+        - springdoc
+        - variables
+        - email
+        - jwt

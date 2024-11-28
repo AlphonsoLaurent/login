@@ -1,0 +1,23 @@
+openapi: 3.0.1
+info:
+  title: API de Ejemplo
+  version: 1.0.0
+  description: Esta es la documentación de la API de ejemplo.
+servers:
+  - url: http://localhost:8080
+    description: Servidor local
+
+paths:
+  /v1/products:
+    get:
+      summary: Obtener todos los productos
+      description: Devuelve una lista de productos.
+      responses:
+        '200':
+          description: Lista de productos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string

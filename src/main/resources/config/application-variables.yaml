@@ -1,0 +1,6 @@
+environment:
+  url: ${URL_BASE_FE:http://localhost:4200}
+app:
+  passwordResetTokenExpirationMinutes: 30
+  frontend:
+    url: http://localhost:4200

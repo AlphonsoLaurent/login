@@ -1,0 +1,8 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*" # Incluye todos los endpoints de administración
+  endpoint:
+    health:
+      show-details: always # Muestra detalles en el endpoint de salud

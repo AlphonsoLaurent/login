@@ -1,0 +1,5 @@
+springdoc:
+  api-docs:
+    enabled: ${SWAGGER_ENABLED:true} # Habilita la generación de documentos API
+  swagger-ui:
+    path: /swagger-ui.html # Ruta para la interfaz de Swagger UI
