@@ -27,7 +27,7 @@ public class EmailService {
             helper.setTo(toEmail);
             helper.setSubject("Password Reset Request");
 
-            String resetLink = hostServerProperties.getUrl() + "/reset-password?token=" + resetToken;
+            String resetLink = hostServerProperties.getBackendUrl() + "/reset-password?token=" + resetToken;
             String emailContent = buildPasswordResetEmailContent(resetLink);
 
             helper.setText(emailContent, true);
