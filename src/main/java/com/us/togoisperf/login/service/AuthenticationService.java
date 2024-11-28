@@ -1,7 +1,16 @@
 package com.us.togoisperf.login.service;
+
+import com.us.togoisperf.login.configuration.properties.HostServerProperties;
+import com.us.togoisperf.login.dto.AuthResponse;
+import com.us.togoisperf.login.dto.LoginRequest;
+import com.us.togoisperf.login.dto.RegisterRequest;
+import com.us.togoisperf.login.dto.UserDTO;
 import com.us.togoisperf.login.exception.TGPException;
+import com.us.togoisperf.login.model.Session;
+import com.us.togoisperf.login.model.User;
+import com.us.togoisperf.login.repository.SessionRepository;
+import com.us.togoisperf.login.repository.UserRepository;
 import com.us.togoisperf.login.security.JwtTokenProvider;
-import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -9,23 +18,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.util.Base64;
 import java.util.UUID;
-
-// Tus clases personalizadas (ajusta los paquetes según tu estructura)
-//import com.us.togoisperf.login.exception.AuthenticationException;
-//import com.us.togoisperf.login.exception.EmailAlreadyExistsException;
-//import com.us.togoisperf.login.exception.UsernameAlreadyExistsException;
-import com.us.togoisperf.login.model.User;
-import com.us.togoisperf.login.model.Session;
-import com.us.togoisperf.login.repository.UserRepository;
-import com.us.togoisperf.login.repository.SessionRepository;
-import com.us.togoisperf.login.dto.AuthResponse;
-import com.us.togoisperf.login.dto.LoginRequest;
-import com.us.togoisperf.login.dto.RegisterRequest;
-import com.us.togoisperf.login.dto.UserDTO;
 
 
 @Service
@@ -37,14 +31,15 @@ public class AuthenticationService {
     private final SessionRepository sessionRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final HostServerProperties hostServerProperties;
 
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new TGPException("", "","Email already registered");
+            throw new TGPException("", "", "Email already registered");
         }
 
         if (userRepository.existsByName(request.getName())) {
-            throw new TGPException("", "","Username already taken");
+            throw new TGPException("", "", "Username already taken");
         }
 
         User user = new User();
@@ -64,17 +59,24 @@ public class AuthenticationService {
 
     public AuthResponse login(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new TGPException("", "","Invalid credentials"));
+                .orElseThrow(() -> new TGPException("", "", "Invalid credentials"));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new TGPException("", "","Invalid credentials");
+            throw new TGPException("", "", "Invalid credentials");
         }
 
-        String token = createSession(user);
+        Session session = new Session();
+        session.setUser(user);
+        session.setSessionToken(UUID.randomUUID().toString());
+        session.setExpiration(LocalDateTime.now().plusHours(hostServerProperties.getPasswordResetTokenExpirationHours()));
+        session = sessionRepository.save(session);
+        String token = jwtTokenProvider.generateToken(user.getId(), session.getSessionToken());
 
         return AuthResponse.builder()
                 .token(token)
                 .user(UserDTO.from(user))
+                .expiresAt(session.getExpiration())
+                .sessionToken(session.getSessionToken())
                 .build();
     }
 

@@ -4,4 +4,4 @@ app:
   host:
     backend_url: ${URL_BACKEND:http://localhost:8181}
     frontend_url: ${URL_BASE_FE:http://localhost:4200}
-  passwordResetTokenExpirationMinutes: 30
+    password_reset_token_expiration_hours: 3
