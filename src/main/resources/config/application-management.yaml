@@ -2,7 +2,9 @@ management:
   endpoints:
     web:
       exposure:
-        include: "*" # Incluye todos los endpoints de administración
+        include: health,metrics,hikari # Incluye todos los endpoints de administración
+  enabled:
+    hikaricp: true # Activa el endpoint de HikariCP
   endpoint:
     health:
       show-details: always # Muestra detalles en el endpoint de salud

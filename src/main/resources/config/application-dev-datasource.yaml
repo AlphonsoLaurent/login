@@ -4,9 +4,15 @@ spring:
     username: ${DB_USERNAME:togoisperf_usr}
     password: ${DB_PASSWORD:t0g015P3R}
     driver-class-name: org.postgresql.Driver
-    hikari:
-      maximum-pool-size: 10
-      schema: ${DB_SCHEMA:login} # Esquema predeterminado para la conexión
+    maximum-pool-size: 10
+    minimum-idle: 5
+    idle-timeout: 300000
+    connection-timeout: 20000
+    max-lifetime: 600000
+    auto-commit: true
+    pool-name: "MainHikariPool"
+    schema-default: "${DB_SCHEMA:servicemaids}"
+
 
   jpa:
     hibernate:
